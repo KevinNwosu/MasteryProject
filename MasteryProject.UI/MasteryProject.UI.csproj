@@ -11,4 +11,9 @@
     <Folder Include="data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MasteryProject.BLL\MasteryProject.BLL.csproj" />
+    <ProjectReference Include="..\MasteryProject.Core\MasteryProject.Core.csproj" />
+  </ItemGroup>
+
 </Project>

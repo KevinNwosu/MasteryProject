@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MasteryProject.Core\MasteryProject.Core.csproj" />
+    <ProjectReference Include="..\MasteryProject.DAL\MasteryProject.DAL.csproj" />
+  </ItemGroup>
+
 </Project>
