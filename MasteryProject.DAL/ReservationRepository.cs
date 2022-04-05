@@ -23,9 +23,19 @@ namespace MasteryProject.DAL
             return reservation;
         }
 
-        public Reservation DeleteReservation(Reservation reservation)
+        public bool DeleteReservation(Reservation reservation)
         {
-            throw new NotImplementedException();
+            List<Reservation> all = GetReservationsByHost(reservation.Host.Id);
+            for (int i = 0; i < all.Count; i++)
+            {
+                if (all[i].ReservationId == reservation.ReservationId)
+                {
+                    all.Remove(all[i]);
+                    Write(all, reservation.Host.Id);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public List<Reservation> GetReservationsByHost(string hostId)
@@ -60,9 +70,19 @@ namespace MasteryProject.DAL
             return reservations;
         }
 
-        public Reservation UpdateReservation(Reservation reservation)
+        public bool UpdateReservation(Reservation reservation)
         {
-            throw new NotImplementedException();
+            List<Reservation> all = GetReservationsByHost(reservation.Host.Id);
+            for (int i = 0; i < all.Count; i++)
+            {
+                if (all[i].ReservationId == reservation.ReservationId)
+                {
+                    all[i] = reservation;
+                    Write(all, reservation.Host.Id);
+                    return true;
+                }
+            }
+            return false;
         }
         private string GetFilePath(string hostId)
         {

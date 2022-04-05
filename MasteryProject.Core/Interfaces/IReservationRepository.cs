@@ -6,7 +6,7 @@ namespace MasteryProject.Core.Interfaces
     {
         List<Reservation> GetReservationsByHost(string hostId);
         Reservation AddReservation(Reservation reservation);
-        Reservation UpdateReservation(Reservation reservation);
-        Reservation DeleteReservation(Reservation reservation);
+        bool UpdateReservation(Reservation reservation);
+        bool DeleteReservation(Reservation reservation);
     }
 }
