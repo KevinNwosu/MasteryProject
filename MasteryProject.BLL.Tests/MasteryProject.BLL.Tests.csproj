@@ -14,4 +14,11 @@
     <PackageReference Include="coverlet.collector" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MasteryProject.BLL\MasteryProject.BLL.csproj" />
+    <ProjectReference Include="..\MasteryProject.Core\MasteryProject.Core.csproj" />
+    <ProjectReference Include="..\MasteryProject.DAL\MasteryProject.DAL.csproj" />
+    <ProjectReference Include="..\MasteryProject.UI\MasteryProject.UI.csproj" />
+  </ItemGroup>
+
 </Project>

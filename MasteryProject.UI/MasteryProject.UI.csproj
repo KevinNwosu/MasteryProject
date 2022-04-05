@@ -16,4 +16,13 @@
     <ProjectReference Include="..\MasteryProject.Core\MasteryProject.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="data\guests.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\hosts.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
