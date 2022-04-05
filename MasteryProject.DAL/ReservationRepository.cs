@@ -15,7 +15,12 @@ namespace MasteryProject.DAL
         }
         public Reservation AddReservation(Reservation reservation)
         {
-            throw new NotImplementedException();
+            List<Reservation> all = GetReservationsByHost(reservation.Host.Id);
+            int nextId = (all.Count == 0 ? 0 : all.Max(i => i.ReservationId)) + 1;
+            reservation.ReservationId = nextId;
+            all.Add(reservation);
+            Write(all, reservation.Host.Id);
+            return reservation;
         }
 
         public Reservation DeleteReservation(Reservation reservation)
@@ -39,7 +44,7 @@ namespace MasteryProject.DAL
             }
             catch (IOException ex)
             {
-                throw new RepositoryException("could not read forages", ex);
+                throw new RepositoryException("could not read reservations", ex);
             }
 
 
@@ -84,6 +89,37 @@ namespace MasteryProject.DAL
             guest.Id = int.Parse(fields[3]);
             result.Guest = guest;
             return result;
+        }
+        private string Serialize(Reservation item)
+        {
+            return string.Format("{0},{1},{2},{3},{4}",
+                    item.ReservationId,
+                    item.StartDate,
+                    item.EndDate,
+                    item.Guest.Id,
+                    item.Cost);
+        }
+        private void Write(List<Reservation> reservations, string hostId)
+        {
+            try
+            {
+                using StreamWriter writer = new StreamWriter(GetFilePath(hostId));
+                writer.WriteLine(HEADER);
+
+                if (reservations == null)
+                {
+                    return;
+                }
+
+                foreach (var reservation in reservations)
+                {
+                    writer.WriteLine(Serialize(reservation));
+                }
+            }
+            catch (IOException ex)
+            {
+                throw new RepositoryException("could not write reservations", ex);
+            }
         }
     }
 }

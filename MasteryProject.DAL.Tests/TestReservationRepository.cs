@@ -36,6 +36,16 @@ namespace MasteryProject.DAL.Tests
             List<Reservation> reservations = repo.GetReservationsByHost(hostId);
             Assert.AreEqual(RESERVATIONCOUNT, reservations.Count);
         }
+        [Test]
+        public void ShouldAddReservationToReservationFile()
+        {
+
+        }
+        [Test]
+        public void ShouldMakeNewReservationFileForNewHost()
+        {
+
+        }
     }
     
 }
