@@ -38,5 +38,12 @@ namespace MasteryProject.DAL.Tests
             Guest guest = repo.GetGuestsByID(96);
             Assert.AreEqual("CA", guest.State);
         }
+        [Test]
+        public void ShouldFindByEmail()
+        {
+            GuestRepository repo = new GuestRepository(@"C:\Users\Chetanna\Code\MasteryProject\MasteryProject.DAL.Tests\data\guests.csv");
+            Guest guest = repo.GetGuestsByEmail("amountc@ehow.com");
+            Assert.AreEqual("IL", guest.State);
+        }
     }
 }
