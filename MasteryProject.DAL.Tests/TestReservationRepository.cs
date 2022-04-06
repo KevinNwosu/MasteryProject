@@ -12,7 +12,8 @@ namespace MasteryProject.DAL.Tests
         const string SEED_FILE_PATH = @"C:\Users\Chetanna\Code\MasteryProject\MasteryProject.DAL.Tests\data\SeedFile.csv";
         const string TEST_FILE_PATH =
             @"C:\Users\Chetanna\Code\MasteryProject\MasteryProject.DAL.Tests\data\reservations_test_data\2e72f86c-b8fe-4265-b4f1-304dea8762db.csv";
-
+        const string FILE_TO_DELETE = 
+            @"C:\Users\Chetanna\Code\MasteryProject\MasteryProject.DAL.Tests\data\reservations_test_data\478472-428642hrj646-24w73.csv";
         string DataDirectory { get; set; }
 
         IReservationRepository repo;
@@ -20,14 +21,15 @@ namespace MasteryProject.DAL.Tests
         const int RESERVATIONCOUNT = 12;
 
         string hostId = "2e72f86c-b8fe-4265-b4f1-304dea8762db";
-        DateTime StartDate = new DateTime(2022, 01, 20);
-        DateTime EndDate = new DateTime(2022, 01, 30);
+        DateOnly StartDate = new DateOnly(2022, 01, 20);
+        DateOnly EndDate = new DateOnly(2022, 01, 30);
 
         [SetUp]
         public void SetUp()
         {
             DataDirectory = $"{Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName}/data/reservations_test_data";
             File.Copy(SEED_FILE_PATH, TEST_FILE_PATH, true);
+            File.Delete(FILE_TO_DELETE);
             repo = new ReservationRepository(DataDirectory);
         }
         [Test]
@@ -46,8 +48,8 @@ namespace MasteryProject.DAL.Tests
         public void ShouldAddReservationToReservationFile()
         {
             Reservation reservation = new Reservation();
-            reservation.StartDate = StartDate.Date;
-            reservation.EndDate = EndDate.Date;
+            reservation.StartDate = StartDate;
+            reservation.EndDate = EndDate;
             reservation.Cost = 2400M;
 
             Guest guest = new Guest();
@@ -68,8 +70,8 @@ namespace MasteryProject.DAL.Tests
         public void ShouldMakeNewReservationFileForNewHost()
         {
             Reservation reservation = new Reservation();
-            reservation.StartDate = StartDate.Date;
-            reservation.EndDate = EndDate.Date;
+            reservation.StartDate = StartDate;
+            reservation.EndDate = EndDate;
             reservation.Cost = 2400M;
 
             Guest guest = new Guest();
@@ -90,8 +92,8 @@ namespace MasteryProject.DAL.Tests
         public void ShouldUpdateExistingReservation()
         {
             Reservation reservation = new Reservation();
-            reservation.StartDate = new DateTime(2022, 1, 5).Date;
-            reservation.EndDate = new DateTime(2022, 1, 12).Date;
+            reservation.StartDate = new DateOnly(2022, 1, 5);
+            reservation.EndDate = new DateOnly(2022, 1, 12);
             reservation.Cost = 1500M;
             reservation.ReservationId = 12;
 
@@ -113,8 +115,8 @@ namespace MasteryProject.DAL.Tests
         public void ShouldNotUpdateNonExistingReservation()
         {
             Reservation reservation = new Reservation();
-            reservation.StartDate = new DateTime(2022, 1, 5).Date;
-            reservation.EndDate = new DateTime(2022, 1, 12).Date;
+            reservation.StartDate = new DateOnly(2022, 1, 5);
+            reservation.EndDate = new DateOnly(2022, 1, 12);
             reservation.Cost = 1500M;
             reservation.ReservationId = 25;
 
@@ -133,8 +135,8 @@ namespace MasteryProject.DAL.Tests
         public void ShouldDeleteReservation()
         {
             Reservation reservation = new Reservation();
-            reservation.StartDate = new DateTime(2022, 1, 5).Date;
-            reservation.EndDate = new DateTime(2022, 1, 10).Date;
+            reservation.StartDate = new DateOnly(2022, 1, 5);
+            reservation.EndDate = new DateOnly(2022, 1, 10);
             reservation.Cost = 1100M;
             reservation.ReservationId = 12;
 
@@ -151,6 +153,28 @@ namespace MasteryProject.DAL.Tests
             Assert.IsTrue(status);
             Assert.AreEqual(reservations.Count, RESERVATIONCOUNT - 1);
 
+        }
+        [Test]
+        public void ShouldNotDeleteReservation()
+        {
+            Reservation reservation = new Reservation();
+            reservation.StartDate = new DateOnly(2022, 1, 5);
+            reservation.EndDate = new DateOnly(2022, 1, 10);
+            reservation.Cost = 1100M;
+            reservation.ReservationId = 55;
+
+            Guest guest = new Guest();
+            guest.Id = 735;
+            reservation.Guest = guest;
+
+            Host host = new Host();
+            host.Id = hostId;
+            reservation.Host = host;
+
+            bool status = repo.DeleteReservation(reservation);
+            List<Reservation> reservations = repo.GetReservationsByHost(hostId);
+            Assert.IsFalse(status);
+            Assert.AreEqual(reservations.Count, RESERVATIONCOUNT);
         }
     }
     

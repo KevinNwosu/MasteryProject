@@ -58,7 +58,7 @@ namespace MasteryProject.DAL
             }
 
 
-            for (int i = 1; i < lines.Length; i++) // skip the header
+            for (int i = 1; i < lines.Length; i++) 
             {
                 string[] fields = lines[i].Split(",", StringSplitOptions.TrimEntries);
                 Reservation reservation = Deserialize(fields, hostId);
@@ -97,8 +97,8 @@ namespace MasteryProject.DAL
 
             Reservation result = new Reservation();
             result.ReservationId = int.Parse(fields[0]);
-            result.StartDate = DateTime.Parse(fields[1]);
-            result.EndDate = DateTime.Parse(fields[2]);
+            result.StartDate = DateOnly.Parse(fields[1]);
+            result.EndDate = DateOnly.Parse(fields[2]);
             result.Cost = decimal.Parse(fields[4]);
 
             Host host = new Host();

@@ -5,8 +5,9 @@ namespace MasteryProject.Core.Interfaces
     public interface IGuestRepository
     {
         List<Guest> GetAllGuests();
-        List<Guest> GetGuestsByID(int id);
-        List<Guest> GetGuestsByName(string name);
+        Guest GetGuestsByID(int id);
+        List<Guest> GetGuestsByState(string stateAbbr);
+        Guest GetGuestsByEmail(string email);
 
     }
 }
