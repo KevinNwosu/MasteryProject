@@ -32,8 +32,11 @@ namespace MasteryProject.BLL
         public Result<Reservation> MakeReservation(Reservation reservation)
         {
             Result<Reservation> result = Validate(reservation);
+            if (!result.Success)
+            {
+                return result;
+            }
             reservation.Cost = reservation.GetCost();
-            result.Success = true;
             result.Data = reservation;
             
             return result;
@@ -41,15 +44,17 @@ namespace MasteryProject.BLL
         public Result<Reservation> AddReservation(Reservation reservation)
         {
             Result<Reservation> result = new Result<Reservation>();
-            result.Success = true;
             result.Data = reservationRepository.AddReservation(reservation);
             return result;
         }
         public Result<Reservation> UpdateReservation(Reservation reservation)
         {
             Result<Reservation> result = Validate(reservation);
+            if (!result.Success)
+            {
+                return result;
+            }
             reservation.Cost = reservation.GetCost();
-            result.Success = true;
             result.Data = reservation;
 
             return result;
@@ -57,13 +62,25 @@ namespace MasteryProject.BLL
         public Result<Reservation> ReplaceReservation(Reservation reservation)
         {
             Result<Reservation> result = new Result<Reservation>();
-            result.Success = reservationRepository.UpdateReservation(reservation);
+            bool status = reservationRepository.UpdateReservation(reservation);
+            if (!status)
+            {
+                result.AddMessage("Reservation not found, could not be updated");
+                return result;
+            }
+            result.Data = reservation;
             return result;
         }
         public Result<Reservation> DeleteReservation(Reservation reservation)
         {
             Result<Reservation> result = new Result<Reservation>();
-            result.Success = reservationRepository.DeleteReservation(reservation);
+            bool status = reservationRepository.DeleteReservation(reservation);
+            if (!status)
+            {
+                result.AddMessage("Reservation not found, could not be deleted");
+                return result;
+            }
+            result.Data = reservation;
             return result;
         }
         public List<Reservation> GetAllReservationsForSpecificHostAndGuest(string hostId, int guestId)
@@ -78,11 +95,9 @@ namespace MasteryProject.BLL
             Reservation reservation = reservations.FirstOrDefault(x => x.ReservationId == reservationId);
             if (reservation == null)
             {
-                result.Success = false;
                 result.AddMessage($"Reservation with id {reservationId} does not exist.");
             }
             result.Data = reservation;
-            result.Success = true;
             return result;
         }
         private Result<Reservation> Validate(Reservation reservation)
@@ -135,7 +150,6 @@ namespace MasteryProject.BLL
 
         private void ValidateFields(Reservation reservation, Result<Reservation> result)
         {
-            // No past dates.
             if (reservation.StartDate < DateOnly.FromDateTime(DateTime.Now))
             {
                 result.AddMessage("Reservation start date cannot be in the past.");
@@ -172,7 +186,6 @@ namespace MasteryProject.BLL
             if (currentReservations != null)
             {
                 result.AddMessage($"Reservation overlaps with {currentReservations.ReservationId}.");
-                result.Success = false;
                 return;
             }
         }

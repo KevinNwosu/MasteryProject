@@ -14,6 +14,9 @@ namespace MasteryProject.BLL.Tests.TestDoubles
         public const decimal COST = 3700M;
         DateOnly StartDate = new DateOnly(2022, 6, 11);
         DateOnly EndDate = new DateOnly(2022, 6, 26);
+        DateOnly StartDate1 = new DateOnly(2022, 7, 11);
+        DateOnly EndDate1 = new DateOnly(2022, 7, 26);
+        
 
         public ReservationRepositoryDouble()
         {
@@ -25,6 +28,17 @@ namespace MasteryProject.BLL.Tests.TestDoubles
             reservation.EndDate = EndDate;
             reservation.Cost = 3500M;
             reservations.Add(reservation);
+
+            Reservation reservation1 = new Reservation();
+            reservation1.ReservationId = 2;
+            reservation1.Guest = GuestRepositoryDouble.GUEST;
+            reservation1.Host = HostRepositoryDouble.HOST;
+            reservation1.StartDate = StartDate1;
+            reservation1.EndDate = EndDate1;
+            reservation1.Cost = 3400M;
+            reservations.Add(reservation1);
+
+
         }
         public Reservation AddReservation(Reservation reservation)
         {

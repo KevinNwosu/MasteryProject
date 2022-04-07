@@ -22,8 +22,8 @@ namespace MasteryProject.BLL.Tests
             Reservation reservation = new Reservation();
             reservation.Guest = GuestRepositoryDouble.GUEST;
             reservation.Host = HostRepositoryDouble.HOST;
-            reservation.StartDate = new DateOnly(2022, 05, 14);
-            reservation.EndDate = new DateOnly(2022, 05, 30);
+            reservation.StartDate = new DateOnly(2022, 04, 16);
+            reservation.EndDate = new DateOnly(2022, 05, 02);
 
             Result<Reservation> result = service.MakeReservation(reservation);
 
@@ -45,9 +45,23 @@ namespace MasteryProject.BLL.Tests
             List<Reservation> reservations = service.GetReservationByHostId(HostRepositoryDouble.HOST.Id);
 
             Assert.IsTrue(result.Success);
-            Assert.NotNull(result.Data);
-            Assert.AreEqual(2, reservations.Count);
-            Assert.AreEqual(2, reservation.ReservationId);
+            Assert.AreEqual(ReservationRepositoryDouble.COST, reservations[2].Cost);
+            Assert.AreEqual(3, reservations.Count);
+            Assert.AreEqual(3, reservation.ReservationId);
+        }
+        [Test]
+        public void ShouldNotMake()
+        {
+            Reservation reservation = new Reservation();
+            reservation.Guest = GuestRepositoryDouble.GUEST;
+            reservation.Host = HostRepositoryDouble.HOST;
+            reservation.StartDate = new DateOnly(2022, 01, 14);
+            reservation.EndDate = new DateOnly(2022, 05, 30);
+            reservation.Cost = ReservationRepositoryDouble.COST;
+
+            Result<Reservation> result = service.MakeReservation(reservation);
+
+            Assert.IsFalse(result.Success);
         }
         [Test]
         public void ShouldNotUpdate()
@@ -55,14 +69,65 @@ namespace MasteryProject.BLL.Tests
             Reservation reservation = new Reservation();
             reservation.Guest = GuestRepositoryDouble.GUEST;
             reservation.Host = HostRepositoryDouble.HOST;
-            reservation.StartDate = new DateOnly(2022, 05, 14);
+            reservation.StartDate = new DateOnly(2022, 01, 14);
             reservation.EndDate = new DateOnly(2022, 05, 30);
-            reservation.Cost = ReservationRepositoryDouble.COST;
+            reservation.ReservationId = 1;
 
             Result<Reservation> result = service.UpdateReservation(reservation);
 
             Assert.IsFalse(result.Success);
             Assert.IsNull(result.Data);
-            Assert.AreEqual(ReservationRepositoryDouble.COST, result.Data.Cost);
+        }
+        [Test]
+        public void ShouldUpdate()
+        {
+            Reservation reservation = new Reservation();
+            reservation.Guest = GuestRepositoryDouble.GUEST;
+            reservation.Host = HostRepositoryDouble.HOST;
+            reservation.StartDate = new DateOnly(2022, 05, 16);
+            reservation.EndDate = new DateOnly(2022, 05, 30);
+            reservation.ReservationId = 3;
+
+            Result<Reservation> result = service.UpdateReservation(reservation);
+
+            Assert.IsTrue(result.Success);
+            Console.WriteLine(result.Messages);
+            Assert.AreEqual(3200, result.Data.Cost);
+        }
+        [Test]
+        public void ShouldReplace()
+        {
+            Reservation reservation = new Reservation();
+            reservation.Guest = GuestRepositoryDouble.GUEST;
+            reservation.Host = HostRepositoryDouble.HOST;
+            reservation.StartDate = new DateOnly(2022, 05, 16);
+            reservation.EndDate = new DateOnly(2022, 05, 30);
+            reservation.Cost = 3200M;
+            reservation.ReservationId = 3;
+
+            Result<Reservation> result = service.ReplaceReservation(reservation);
+            List<Reservation> reservations = service.GetReservationByHostId(HostRepositoryDouble.HOST.Id);
+
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual(3, reservations.Count);
+            Assert.AreEqual(reservation.Cost, reservations[2].Cost);
+        }
+        [Test]
+        public void ShouldNotReplace()
+        {
+            Reservation reservation = new Reservation();
+            reservation.Guest = GuestRepositoryDouble.GUEST;
+            reservation.Host = HostRepositoryDouble.HOST;
+            reservation.StartDate = new DateOnly(2022, 05, 16);
+            reservation.EndDate = new DateOnly(2022, 05, 30);
+            reservation.Cost = 3200M;
+            reservation.ReservationId = 5;
+
+            Result<Reservation> result = service.ReplaceReservation(reservation);
+            List<Reservation> reservations = service.GetReservationByHostId(HostRepositoryDouble.HOST.Id);
+
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual(ReservationRepositoryDouble.COST, reservations[2].Cost);
         }
     }
+}
