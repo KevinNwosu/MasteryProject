@@ -32,20 +32,57 @@ namespace MasteryProject.BLL
         public Result<Reservation> MakeReservation(Reservation reservation)
         {
             Result<Reservation> result = Validate(reservation);
-            List<Reservation> reservations = reservationRepository.GetReservationsByHost(reservation.Host.Id);
-
-            var currentReservations = reservations.FirstOrDefault(
-                x => (x.StartDate < reservation.EndDate && x.EndDate > reservation.EndDate)
-                ||(x.StartDate < reservation.StartDate && x.EndDate > reservation.StartDate));
-
-            if (currentReservations != null)
-            {
-                result.AddMessage($"Reservation overlaps.");
-                return result;
-            }
             reservation.Cost = reservation.GetCost();
-            result.Data = reservationRepository.AddReservation(reservation);
+            result.Success = true;
+            result.Data = reservation;
             
+            return result;
+        }
+        public Result<Reservation> AddReservation(Reservation reservation)
+        {
+            Result<Reservation> result = new Result<Reservation>();
+            result.Success = true;
+            result.Data = reservationRepository.AddReservation(reservation);
+            return result;
+        }
+        public Result<Reservation> UpdateReservation(Reservation reservation)
+        {
+            Result<Reservation> result = Validate(reservation);
+            reservation.Cost = reservation.GetCost();
+            result.Success = true;
+            result.Data = reservation;
+
+            return result;
+        }
+        public Result<Reservation> ReplaceReservation(Reservation reservation)
+        {
+            Result<Reservation> result = new Result<Reservation>();
+            result.Success = reservationRepository.UpdateReservation(reservation);
+            return result;
+        }
+        public Result<Reservation> DeleteReservation(Reservation reservation)
+        {
+            Result<Reservation> result = new Result<Reservation>();
+            result.Success = reservationRepository.DeleteReservation(reservation);
+            return result;
+        }
+        public List<Reservation> GetAllReservationsForSpecificHostAndGuest(string hostId, int guestId)
+        {
+            List<Reservation> reservations = reservationRepository.GetReservationsByHost(hostId);
+            List<Reservation> guestReservations = reservations.Where(x => x.Guest.Id == guestId).ToList();
+            return guestReservations;
+        }
+        public Result<Reservation> GetReservationById(int reservationId, List<Reservation> reservations)
+        {
+            Result<Reservation> result = new Result<Reservation>();
+            Reservation reservation = reservations.FirstOrDefault(x => x.ReservationId == reservationId);
+            if (reservation == null)
+            {
+                result.Success = false;
+                result.AddMessage($"Reservation with id {reservationId} does not exist.");
+            }
+            result.Data = reservation;
+            result.Success = true;
             return result;
         }
         private Result<Reservation> Validate(Reservation reservation)
@@ -63,6 +100,12 @@ namespace MasteryProject.BLL
             }
 
             ValidateChildrenExist(reservation, result);
+            if (!result.Success)
+            {
+                return result;
+            }
+
+            ValidateOverLappingdates(reservation, result);
 
             return result;
         }
@@ -115,6 +158,22 @@ namespace MasteryProject.BLL
             if (reservation.Guest.Id == null || guestRepository.GetGuestsByID(reservation.Guest.Id) == null)
             {
                 result.AddMessage("Guest does not exist.");
+            }
+        }
+        private void ValidateOverLappingdates(Reservation reservation, Result<Reservation> result)
+        {
+            List<Reservation> reservations = reservationRepository.GetReservationsByHost(reservation.Host.Id);
+            var otherReservations = reservations.Where(x => x.ReservationId != reservation.ReservationId);
+
+            var currentReservations = otherReservations.FirstOrDefault(
+                x => (x.StartDate <= reservation.EndDate && x.EndDate >= reservation.EndDate)
+                || (x.StartDate <= reservation.StartDate && x.EndDate >= reservation.StartDate));
+
+            if (currentReservations != null)
+            {
+                result.AddMessage($"Reservation overlaps with {currentReservations.ReservationId}.");
+                result.Success = false;
+                return;
             }
         }
     }

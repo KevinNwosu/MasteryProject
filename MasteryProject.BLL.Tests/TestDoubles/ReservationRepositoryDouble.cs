@@ -12,8 +12,8 @@ namespace MasteryProject.BLL.Tests.TestDoubles
     {   
         private readonly List<Reservation> reservations = new List<Reservation>();
         public const decimal COST = 3700M;
-        DateOnly StartDate = new DateOnly(2022, 1, 15);
-        DateOnly EndDate = new DateOnly(2022, 1, 30);
+        DateOnly StartDate = new DateOnly(2022, 6, 11);
+        DateOnly EndDate = new DateOnly(2022, 6, 26);
 
         public ReservationRepositoryDouble()
         {
@@ -37,17 +37,34 @@ namespace MasteryProject.BLL.Tests.TestDoubles
 
         public bool DeleteReservation(Reservation reservation)
         {
-            throw new NotImplementedException();
+            var all = reservations;
+            for (int i = 0; i < all.Count; i++)
+            {
+                if (all[i].ReservationId == reservation.ReservationId)
+                {
+                    all.Remove(all[i]);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public List<Reservation> GetReservationsByHost(string hostId)
         {
             return reservations.Where(i => i.Host.Id == hostId).ToList();
         }
-
         public bool UpdateReservation(Reservation reservation)
         {
-            throw new NotImplementedException();
+            var all = reservations;
+            for (int i = 0; i < all.Count; i++)
+            {
+                if (all[i].ReservationId == reservation.ReservationId)
+                {
+                    all[i] = reservation;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
