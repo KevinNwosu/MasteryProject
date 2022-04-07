@@ -1,2 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using MasteryProject.UI;
+using Ninject;
+
+NinjectContainer.Configure();
+Controller controller = NinjectContainer.kernel.Get<Controller>();
+controller.Run();

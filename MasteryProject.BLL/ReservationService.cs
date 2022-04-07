@@ -100,6 +100,18 @@ namespace MasteryProject.BLL
             result.Data = reservation;
             return result;
         }
+        public List<Host> GetHostsByEmail(string email)
+        {
+            var hosts = hostRepository.GetAllHosts().Where(i => i.Email.StartsWith(email))
+                    .ToList(); ;
+            return hosts;
+        }
+        public List<Guest> GetGuestsByEmail(string email)
+        {
+            var guests = guestRepository.GetAllGuests().Where(i => i.Email.StartsWith(email))
+                    .ToList(); ;
+            return guests;
+        }
         private Result<Reservation> Validate(Reservation reservation)
         {
             Result<Reservation> result = ValidateNulls(reservation);

@@ -119,15 +119,15 @@ namespace MasteryProject.UI
             }
         }
 
-        public DateTime ReadDate(string prompt)
+        public DateOnly ReadDate(string prompt)
         {
-            DateTime result;
+            DateOnly result;
             while (true)
             {
                 string input = ReadRequiredString(prompt);
-                if (DateTime.TryParse(input, out result))
+                if (DateOnly.TryParse(input, out result))
                 {
-                    return result.Date;
+                    return result;
                 }
                 PrintLine(INVALID_DATE);
             }
