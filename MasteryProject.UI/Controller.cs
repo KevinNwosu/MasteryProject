@@ -118,7 +118,13 @@ namespace MasteryProject.UI
             {
                 return;
             }
-            var reservations = reservationService.GetAllReservationsForSpecificHostAndGuest(host.Id, guest.Id);
+            var reservations = reservationService.GetAllReservationsForSpecificHostAndGuest(host.Id, guest.Id).
+                Where(x => x.StartDate > DateOnly.FromDateTime(DateTime.Now)).ToList(); 
+            if (reservations.Count == 0)
+            {
+                view.DisplayStatus(false, "No reservations found.");
+                return;
+            }
             view.DisplayReservations(reservations, host);
             int reservationId = view.SelectReservation();
             Result<Reservation> reservationCheckResult = reservationService.GetReservationById(reservationId, reservations);
@@ -164,7 +170,13 @@ namespace MasteryProject.UI
             {
                 return;
             }
-            var reservations = reservationService.GetAllReservationsForSpecificHostAndGuest(host.Id, guest.Id).Where(x => x.StartDate > DateOnly.FromDateTime(DateTime.Now)).ToList();
+            var reservations = reservationService.GetAllReservationsForSpecificHostAndGuest(
+                host.Id, guest.Id).Where(x => x.StartDate > DateOnly.FromDateTime(DateTime.Now)).ToList();
+            if (reservations.Count == 0)
+            {
+                view.DisplayStatus(false, "No reservations found.");
+                return;
+            }
             view.DisplayReservations(reservations, host);
             int reservationId = view.SelectReservation();
             Result<Reservation> reservationCheckResult = reservationService.GetReservationById(reservationId, reservations);
