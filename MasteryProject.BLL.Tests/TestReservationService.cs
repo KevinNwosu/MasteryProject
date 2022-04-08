@@ -91,7 +91,6 @@ namespace MasteryProject.BLL.Tests
             Result<Reservation> result = service.UpdateReservation(reservation);
 
             Assert.IsTrue(result.Success);
-            Console.WriteLine(result.Messages);
             Assert.AreEqual(3200, result.Data.Cost);
         }
         [Test]
