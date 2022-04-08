@@ -73,6 +73,11 @@ namespace MasteryProject.BLL
         }
         public Result<Reservation> DeleteReservation(Reservation reservation)
         {
+            Result<Reservation> ValidateResult = Validate(reservation);
+            if (!ValidateResult.Success)
+            {
+                return ValidateResult;
+            }
             Result<Reservation> result = new Result<Reservation>();
             bool status = reservationRepository.DeleteReservation(reservation);
             if (!status)
@@ -95,7 +100,7 @@ namespace MasteryProject.BLL
             Reservation reservation = reservations.FirstOrDefault(x => x.ReservationId == reservationId);
             if (reservation == null)
             {
-                result.AddMessage($"Reservation with id {reservationId} does not exist.");
+                result.AddMessage($"Reservation with id {reservationId} cannot be changed.");
             }
             result.Data = reservation;
             return result;
@@ -178,7 +183,7 @@ namespace MasteryProject.BLL
             if (reservation.Host.Id == null
                     || hostRepository.GetHostsById(reservation.Host.Id) == null)
             {
-                result.AddMessage("Forager does not exist.");
+                result.AddMessage("Host does not exist.");
             }
 
             if (reservation.Guest.Id == null || guestRepository.GetGuestsByID(reservation.Guest.Id) == null)
@@ -197,7 +202,7 @@ namespace MasteryProject.BLL
 
             if (currentReservations != null)
             {
-                result.AddMessage($"Reservation overlaps with {currentReservations.ReservationId}.");
+                result.AddMessage($"Reservation overlaps with reservation {currentReservations.ReservationId}.");
                 return;
             }
         }

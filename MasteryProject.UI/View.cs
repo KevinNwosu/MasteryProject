@@ -123,6 +123,21 @@ namespace MasteryProject.UI
 
             return reservation;
         }
+        public Reservation EditReservation(Reservation reservation, Host host)
+        {
+            reservation.Host = host;
+            string startDate = io.ReadString($"Start date [mm/dd/yyyy] {reservation.StartDate}: ");
+            string endDate = io.ReadString($"End date [mm/dd/yyyy] {reservation.EndDate}: ");
+            if (!string.IsNullOrEmpty(startDate))
+            {
+                reservation.StartDate = DateOnly.Parse(startDate);
+            }
+            if (!string.IsNullOrEmpty(endDate))
+            {
+                reservation.EndDate = DateOnly.Parse(endDate);
+            }
+            return reservation;
+        }
 
         public void EnterToContinue()
         {
@@ -143,7 +158,7 @@ namespace MasteryProject.UI
 
         internal int SelectReservation()
         {
-            return io.ReadInt("Select reservation to edit: ");
+            return io.ReadInt("Select reservation: ");
         }
 
         public void DisplayException(Exception ex)
@@ -215,7 +230,7 @@ namespace MasteryProject.UI
             foreach (Host host in hosts)
             {
                 io.PrintLine(
-                    string.Format("{0} {1} {2} {3} {4}",
+                    string.Format("{0} {1} {2} ${3:0.00} ${4:0.00}",
                     host.Email,
                     host.State,
                     host.City,

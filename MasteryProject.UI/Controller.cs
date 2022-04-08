@@ -128,7 +128,7 @@ namespace MasteryProject.UI
             }
             else
             {
-                Reservation reservation = reservationCheckResult.Data;
+                Reservation reservation = view.EditReservation(reservationCheckResult.Data, host);
                 Result<Reservation> result = reservationService.UpdateReservation(reservation);
                 if (!result.Success)
                 {
