@@ -117,6 +117,19 @@ namespace MasteryProject.BLL
                     .ToList(); ;
             return guests;
         }
+        public Result<Host> GetBestRateInState(string state)
+        {
+            Result<Host> result = new Result<Host>();
+            List<Host> hosts = hostRepository.GetAllHosts().Where(i => i.State == state).ToList();
+            if (hosts.Count == 0)
+            {
+                result.AddMessage("No hosts found in state");
+                return result;
+            }
+            Host bestHost = hosts.OrderBy(i => i.RegRate).ThenBy(i => i.WeekendRate).First();
+            result.Data = bestHost;
+            return result;
+        }
         private Result<Reservation> Validate(Reservation reservation)
         {
             Result<Reservation> result = ValidateNulls(reservation);

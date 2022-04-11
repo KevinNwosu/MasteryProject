@@ -54,6 +54,9 @@ namespace MasteryProject.UI
                     case MainMenuOption.CancelAReservation:
                         CancelReservation();
                         break;
+                    case MainMenuOption.GetBestRateInStateHost:
+                        GetBestRateInStateHost();
+                        break;
                 }
             } while (option != MainMenuOption.Exit);
         }
@@ -198,6 +201,19 @@ namespace MasteryProject.UI
                     view.DisplayStatus(true, successMessage);
                 }
             }
+        }
+        private void GetBestRateInStateHost()
+        {
+            view.DisplayHeader(MainMenuOption.GetBestRateInStateHost.ToLabel());
+            string state = view.GetState();
+            Host host = reservationService.GetBestRateInState(state).Data;
+            if (host == null)
+            {
+                return;
+            }
+            List<Host> hosts = new();
+            hosts.Add(host);
+            view.DisplayHosts(hosts);
         }
 
         // support methods

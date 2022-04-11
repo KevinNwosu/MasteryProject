@@ -138,6 +138,10 @@ namespace MasteryProject.UI
             }
             return reservation;
         }
+        public string GetState()
+        {
+            return io.ReadRequiredString("State: ");
+        }
 
         public void EnterToContinue()
         {

@@ -12,7 +12,8 @@ namespace MasteryProject.UI
         ViewReservationsforHost,
         MakeAReservation,
         EditAReservation,
-        CancelAReservation
+        CancelAReservation,
+        GetBestRateInStateHost
     }
     
     public static class MainMenuOptionExtensions
@@ -24,6 +25,7 @@ namespace MasteryProject.UI
             MainMenuOption.MakeAReservation => "Make a Reservation",
             MainMenuOption.EditAReservation => "Edit a Reservation",
             MainMenuOption.CancelAReservation => "Cancel a Reservation",
+            MainMenuOption.GetBestRateInStateHost => "Bonus!: Get Host With Best Rate in State",
             _ => throw new NotImplementedException()
         };
     }
